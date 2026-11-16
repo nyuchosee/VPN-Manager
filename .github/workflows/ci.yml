@@ -1,0 +1,23 @@
+name: Code quality and security regression
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pytest -q
+      - run: for f in scripts/*.sh; do bash -n "$f"; done
+      - run: python scripts/check_secrets.py
+      - run: python scripts/build_setup.py
+      - run: git diff --exit-code -- dist/
+      - run: (cd dist && sha256sum -c SHA256SUMS)
+      - run: bash dist/vpn-manager-setup-0.5.2.sh --verify
