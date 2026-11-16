@@ -1,0 +1,5 @@
+# Consistent Unix line endings for scripts on VPS
+*.sh text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.txt text eol=lf

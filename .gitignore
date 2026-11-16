@@ -1,0 +1,64 @@
+# Secrets and active server configuration
+.env
+.env.*
+!.env.example
+**/bot.env
+**/bot.env.*
+!deploy/bot.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+id_ed25519*
+*.token
+*.secret
+
+# Databases, state, backups and generated client URLs
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.sql
+*.bak
+*.backup
+*.db.bak
+/backups/
+/backup/
+/var/
+/data/
+/logs/
+*.log
+*.log.*
+
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+htmlcov/
+*.egg-info/
+
+# IDE and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Local release artefacts (source and verified setup.sh are tracked)
+*.zip
+*.tar.gz
+*.tgz
+*.tmp
+*.temp
