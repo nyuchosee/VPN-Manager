@@ -5,6 +5,7 @@
 ## 1. Системные требования
 
 - Linux с `systemd`, правами `sudo` и доступом к интернету; ориентир — Ubuntu/Debian с Python **3.10+** и модулем `venv`.
+- Установленный `git` для получения проекта из GitHub (на Ubuntu/Debian при необходимости: `sudo apt-get update && sudo apt-get install -y git`).
 - Действующая панель **3x-ui** с HTTPS-доступом к API и заранее созданными Inbound (совместимость конкретной версии следует проверять диагностикой).
 - Отдельный Telegram-бот и его токен от BotFather, числовой Telegram ID администратора, API Token панели, HTTPS-адрес панели и шаблон URL подписки.
 - `python3`, `tar`, `systemctl`; зависимости Python устанавливаются мастером. `nginx` и Xray не переустанавливаются.
@@ -12,23 +13,39 @@
 
 ## 2. Установка и команды
 
-**Скачать:** замените `OWNER/REPOSITORY` адресом публичного репозитория (ветка `main`):
+**Шаг 1. Клонируйте репозиторий на сервер.** Замените `OWNER/REPOSITORY` именем владельца и названием своего публичного репозитория на GitHub (ветка `main`):
 
 ```bash
-BASE="https://raw.githubusercontent.com/OWNER/REPOSITORY/main/dist"
-wget -O vpn-manager-setup-0.5.2.sh "$BASE/vpn-manager-setup-0.5.2.sh"
-wget -O SHA256SUMS "$BASE/SHA256SUMS"
-sha256sum -c SHA256SUMS
-bash vpn-manager-setup-0.5.2.sh --verify
+git clone --depth 1 --branch main https://github.com/OWNER/REPOSITORY.git vpn-manager
+cd vpn-manager
 ```
 
-**Установить** (или запустить безопасный мастер обновления, если бот уже установлен):
+**Шаг 2. Проверьте целостность установщика** (команды выполняются из каталога `vpn-manager`):
 
 ```bash
-sudo bash vpn-manager-setup-0.5.2.sh
+(cd dist && sha256sum -c SHA256SUMS)
+bash dist/vpn-manager-setup-0.5.2.sh --verify
+```
+
+**Шаг 3. Запустите мастер установки** (или безопасного обновления, если бот уже установлен):
+
+```bash
+sudo bash dist/vpn-manager-setup-0.5.2.sh
 ```
 
 Мастер последовательно запросит токен Telegram, ID администратора, HTTPS URL и API Token 3x-ui, список ID существующих Inbound и шаблон подписки. Ввод секретов скрыт. При первоначальной установке выполняется резервирование панели и проверка API **без записи**. При обновлении прежняя SQLite и конфигурация сохраняются; требуется заранее выключить режим записи.
+
+**Если репозиторий уже клонирован и вышло обновление:** сначала сделайте резервную копию и отключите запись, затем получите изменения из `main`, проверьте новый установщик и запустите его. Пример для версии 0.5.2 (при выпуске новой версии замените имя файла):
+
+```bash
+sudo vpn-manager-write-mode --disable
+sudo vpn-manager-backup --all
+cd vpn-manager                 # если вы находитесь в каталоге, содержащем vpn-manager
+git pull --ff-only origin main
+(cd dist && sha256sum -c SHA256SUMS)
+bash dist/vpn-manager-setup-0.5.2.sh --verify
+sudo bash dist/vpn-manager-setup-0.5.2.sh
+```
 
 **После установки:**
 
