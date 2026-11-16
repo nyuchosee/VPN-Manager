@@ -1,0 +1,35 @@
+[Unit]
+Description=Telegram VPN Manager for 3x-ui
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=vpn-bot
+Group=vpn-bot
+WorkingDirectory=/opt/vpn-bot
+EnvironmentFile=/etc/vpn-bot/bot.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/opt/vpn-bot/.venv/bin/python -m app.main
+Restart=on-failure
+RestartSec=10
+UMask=0077
+NoNewPrivileges=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+LockPersonality=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+ProtectClock=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ReadWritePaths=/var/lib/vpn-bot
+
+[Install]
+WantedBy=multi-user.target
